@@ -55,10 +55,10 @@ SUBST_VARS.vars=	MACHINE_GNU_PLATFORM
 
 # For the tools build (i.e. when not using USE_GCC_LOCALBASE_PREFIX) we
 # do not want rpaths to leak into final binaries.
-.if ${USE_GCC_LOCALBASE_PREFIX:Uno:tl} != "yes"
-SUBST_SED.vars+=	-e '/-R/d'
-SUBST_SED.vars+=	-e '/-DLINK_LIBGCC_SPEC=/d'
-.endif
+#.if ${USE_GCC_LOCALBASE_PREFIX:Uno:tl} != "yes"
+#SUBST_SED.vars+=	-e '/-R/d'
+#SUBST_SED.vars+=	-e '/-DLINK_LIBGCC_SPEC=/d'
+#.endif
 
 LANGS=			c
 
