@@ -28,8 +28,8 @@ Support -fstrict-calling-conventions and -msave-args.
        &= ~((OPTION_MASK_ISA_BMI | OPTION_MASK_ISA_BMI2 | OPTION_MASK_ISA_TBM)
  	   & ~opts->x_ix86_isa_flags_explicit);
  
-+  if (!TARGET_64BIT_P (opts->x_ix86_isa_flags) && TARGET_SAVE_ARGS)
-+    error ("-msave-args makes no sense in 32-bit mode");
++  if (!TARGET_64BIT && TARGET_SAVE_ARGS)
++    warning (0, "-msave-args is ignored in 32-bit mode");
 +
    /* Validate -mpreferred-stack-boundary= value or default it to
       PREFERRED_STACK_BOUNDARY_DEFAULT.  */
@@ -63,7 +63,7 @@ Support -fstrict-calling-conventions and -msave-args.
    if (TARGET_32BIT_MS_ABI && cfun->calls_setjmp)
      return true;
  
-+  if (TARGET_SAVE_ARGS)
++  if (TARGET_64BIT && TARGET_SAVE_ARGS)
 +    return true;
 +
    /* Win64 SEH, very large frames need a frame-pointer as maximum stack
@@ -91,7 +91,7 @@ Support -fstrict-calling-conventions and -msave-args.
    /* The traditional frame pointer location is at the top of the frame.  */
    frame->hard_frame_pointer_offset = offset;
  
-+  if (TARGET_SAVE_ARGS)
++  if (TARGET_64BIT && TARGET_SAVE_ARGS)
 +    {
 +      offset += frame->nmsave_args * UNITS_PER_WORD;
 +      offset += (frame->nmsave_args % 2) * UNITS_PER_WORD;
@@ -148,7 +148,7 @@ Support -fstrict-calling-conventions and -msave-args.
    unsigned int regno;
    rtx_insn *insn;
  
-+  if (TARGET_SAVE_ARGS)
++  if (TARGET_64BIT && TARGET_SAVE_ARGS)
 +    {
 +      int i;
 +      int nsaved = ix86_nsaved_args ();
@@ -178,7 +178,7 @@ Support -fstrict-calling-conventions and -msave-args.
    unsigned int regno;
 +  HOST_WIDE_INT cfa_offset = frame->arg_save_offset;
 +
-+  if (TARGET_SAVE_ARGS)
++  if (TARGET_64BIT && TARGET_SAVE_ARGS)
 +    {
 +      int i;
 +      int nsaved = ix86_nsaved_args ();
@@ -240,7 +240,7 @@ Support -fstrict-calling-conventions and -msave-args.
        ix86_emit_restore_regs_using_pop ();
      }
  
-+  if (TARGET_SAVE_ARGS) {
++  if (TARGET_64BIT && TARGET_SAVE_ARGS) {
 +    /*
 +     * For each saved argument, emit a restore note, to make sure it happens
 +     * correctly within the shrink wrapping (I think).
@@ -282,7 +282,7 @@ Support -fstrict-calling-conventions and -msave-args.
 +static int
 +ix86_nsaved_args (void)
 +{
-+  if (TARGET_SAVE_ARGS)
++  if (TARGET_64BIT && TARGET_SAVE_ARGS)
 +    return crtl->args.info.regno - cfun->returns_struct;
 +  else
 +    return 0;
